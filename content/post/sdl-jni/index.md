@@ -7,7 +7,7 @@ math:
 license:
 hidden: false
 comments: true
-draft: true
+draft: false
 tags: ["jni", "sdl3", "android"]
 ---
 В последние дни я стал изучать JNI, даже путем не зная Java.
