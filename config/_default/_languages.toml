@@ -1,6 +1,6 @@
 # Rename this file to languages.toml to enable multilingual support
-[en]
-languageName = "English"
+[ru]
+languageName = "Russian"
 languagedirection = "ltr"
-title = "Example Site"
+title = "Блог shortice"
 weight = 1

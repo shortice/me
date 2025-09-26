@@ -13,8 +13,8 @@ published = "Jan 02, 2006"
 lastUpdated = "Jan 02, 2006 15:04 MST"
 
 [sidebar]
-emoji = "🍥"
-subtitle = "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+emoji = "🌸"
+subtitle = "Начинающий разработчик, возможно..."
 
 [sidebar.avatar]
 enabled = true
@@ -76,7 +76,7 @@ enabled = true
 
 ## Comments
 [comments]
-enabled = true
+enabled = false
 provider = "disqus"
 
 [comments.disqusjs]
@@ -123,8 +123,8 @@ path = ""
 lang = ""
 
 [comments.cactus]
-defaultHomeserverUrl = "https://matrix.cactus.chat:8448"
-serverName = "cactus.chat"
+defaultHomeserverUrl = ""
+serverName = ""
 siteName = ""
 
 [comments.giscus]
