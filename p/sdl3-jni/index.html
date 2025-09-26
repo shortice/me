@@ -1,0 +1,353 @@
+<!doctype html><html lang=en-us dir=ltr><head><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'><meta name=description content="Делаем API уведомлений для SDL, заодно и учимся как работать с JNI."><title>SDL3 Jni</title><link rel=canonical href=https://shortice.github.io/me/p/sdl3-jni/><link rel=stylesheet href=/me/scss/style.min.663803bebe609202d5b39d848f2d7c2dc8b598a2d879efa079fa88893d29c49c.css><meta property='og:title' content="SDL3 Jni"><meta property='og:description' content="Делаем API уведомлений для SDL, заодно и учимся как работать с JNI."><meta property='og:url' content='https://shortice.github.io/me/p/sdl3-jni/'><meta property='og:site_name' content='Блог shortice'><meta property='og:type' content='article'><meta property='article:section' content='Post'><meta property='article:tag' content='jni'><meta property='article:tag' content='sdl3'><meta property='article:tag' content='android'><meta property='article:published_time' content='2025-09-26T22:51:10+05:00'><meta property='article:modified_time' content='2025-09-26T22:51:10+05:00'><meta name=twitter:title content="SDL3 Jni"><meta name=twitter:description content="Делаем API уведомлений для SDL, заодно и учимся как работать с JNI."><link rel="shortcut icon" href=/favicon.png></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"auto")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label="Показать/скрыть меню">
+<span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=/me/><img src=/me/img/avatar_hu_6be9127d8c2d66d8.png width=300 height=300 class=site-logo loading=lazy alt=Avatar>
+</a><span class=emoji>🌸</span></figure><div class=site-meta><h1 class=site-name><a href=/me>Блог shortice</a></h1><h2 class=site-description>Начинающий разработчик, возможно...</h2></div></header><ol class=menu-social><li><a href=https://github.com/shortice target=_blank title=GitHub rel=me><svg class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6.0 00-1.3-3.2 4.2 4.2.0 00-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3.0 00-6.2.0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2.0 00-.1 3.2A4.6 4.6.0 004 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg></a></li><li><a href=https://t.me/short2net target=_blank title=Telegram rel=me><svg class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M10 14a3.5 3.5.0 005 0l4-4a3.5 3.5.0 00-5-5l-.5.5"/><path d="M14 10a3.5 3.5.0 00-5 0l-4 4a3.5 3.5.0 005 5l.5-.5"/></svg></a></li></ol><ol class=menu id=main-menu><li><a href=/me/><svg class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
+<span>Home</span></a></li><li><a href=/me/search/><svg class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15" y2="15"/></svg>
+<span>Search</span></a></li><li><a href=/me/links/><svg class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M10 14a3.5 3.5.0 005 0l4-4a3.5 3.5.0 00-5-5l-.5.5"/><path d="M14 10a3.5 3.5.0 00-5 0l-4 4a3.5 3.5.0 005 5l.5-.5"/></svg>
+<span>Links</span></a></li><li class=menu-bottom-section><ol class=menu><li id=dark-mode-toggle><svg class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<svg class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<span>Тёмный режим</span></li></ol></li></ol></aside><main class="main full-width"><article class=main-article><header class=article-header><div class=article-details><div class=article-title-wrapper><h2 class=article-title><a href=/me/p/sdl3-jni/>SDL3 Jni</a></h2><h3 class=article-subtitle>Делаем API уведомлений для SDL, заодно и учимся как работать с JNI.</h3></div><footer class=article-time><div><svg class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
+<time class=article-time--published>сент. 26, 2025</time></div><div><svg class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+<time class=article-time--reading>Время чтения: 8 мин.</time></div></footer></div></header><section class=article-content><p>В последние дни я стал изучать JNI, даже путем не зная Java.</p><p>Для чего?</p><p>Я планирую разрабатывать приложения для Android, используя SDL библиотеку на C++ или egui на Rust и вот, в SDL не было нужных мне функций, а именно:</p><ul><li>Запрос на полный доступ к хранилищу с Android 11 (до этой версии Android можно было спокойно дергать простой запрос права на чтение хранилища. Да, Google Play такое не любит, однако пока я не хочу возиться с Storage Access Framework, да и регистрировать сам Google аккаунт в сторе);</li><li>Уведомления;</li><li>Получить путь к основной папке пользователя;</li></ul><p>Хоть я еще точно не определился на каком ЯП писать, JNI понимать мне уж точно не помешает.</p><p>В рамках данного полотна текста расскажу про то, как сделать простые уведомления для SDL, остальное пока оставлю на будущее. Будем использовать сам SDL, Dear ImGui для простого UI, пару патчей для SDL Android Project и собственно JNI. Данное полотно текста подразумевает, что вы хоть как-то понимаете программирование и делали поделки на C++ с использованием Cmake, я тут не буду писать конфиг сборки для Cmake, если вам лень самому, можете просто использовать готовый пример <a class=link href=https://github.com/shortice/SDL-Jni target=_blank rel=noopener>здесь</a>.</p><p>Собственно, что такое JNI сказано на 100 сайтах, я не буду ничего говорить, не рассматривайте это как руководство для JNI, если нужно больше деталей, рассматривайте другие ресурсы, лично я читал на сайте Oracle, а именно <a class=link href=https://docs.oracle.com/javase/8/docs/technotes/guides/jni/spec/jniTOC.html target=_blank rel=noopener>здесь</a>. Я расскажу свой кейс и покажу, включая исходный код, как я сделал эти функции. Да, там не идеально. Да, там нужно будет доработать пару моментов, но на мой взгляд, я хорошо постарался для первого раза.</p><p>Первое, что я сделал это посмотрел, а как в SDL вообще работает JNI. Наткнулся на вот такой кусок кода <a class=link href=https://wiki.libsdl.org/SDL3/SDL_GetAndroidJNIEnv#code-examples target=_blank rel=noopener>здесь</a>.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-cpp data-lang=cpp><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;SDL3/SDL.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;jni.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp></span>
+</span></span><span class=line><span class=cl><span class=c1>// This example requires C++ and a custom Java method named &#34;void showHome()&#34;
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl><span class=c1>// Calls the void showHome() method of the Java instance of the activity.
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kt>void</span> <span class=nf>showHome</span><span class=p>(</span><span class=kt>void</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// retrieve the JNI environment.
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=n>JNIEnv</span><span class=o>*</span> <span class=n>env</span> <span class=o>=</span> <span class=p>(</span><span class=n>JNIEnv</span><span class=o>*</span><span class=p>)</span><span class=n>SDL_GetAndroidJNIEnv</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>// retrieve the Java instance of the SDLActivity
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=n>jobject</span> <span class=n>activity</span> <span class=o>=</span> <span class=p>(</span><span class=n>jobject</span><span class=p>)</span><span class=n>SDL_GetAndroidActivity</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>// find the Java class of the activity. It should be SDLActivity or a subclass of it.
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=n>jclass</span> <span class=n>clazz</span><span class=p>(</span><span class=n>env</span><span class=o>-&gt;</span><span class=n>GetObjectClass</span><span class=p>(</span><span class=n>activity</span><span class=p>));</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>// find the identifier of the method to call
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=n>jmethodID</span> <span class=n>method_id</span> <span class=o>=</span> <span class=n>env</span><span class=o>-&gt;</span><span class=n>GetMethodID</span><span class=p>(</span><span class=n>clazz</span><span class=p>,</span> <span class=s>&#34;showHome&#34;</span><span class=p>,</span> <span class=s>&#34;()V&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>// effectively call the Java method
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=n>env</span><span class=o>-&gt;</span><span class=n>CallVoidMethod</span><span class=p>(</span><span class=n>activity</span><span class=p>,</span> <span class=n>method_id</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>// clean up the local references.
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=n>env</span><span class=o>-&gt;</span><span class=n>DeleteLocalRef</span><span class=p>(</span><span class=n>activity</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=n>env</span><span class=o>-&gt;</span><span class=n>DeleteLocalRef</span><span class=p>(</span><span class=n>clazz</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>// Warning (and discussion of implementation details of SDL for Android):
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=c1>// Local references are automatically deleted if a native function called
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=c1>// from Java side returns. For SDL this native function is main() itself.
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=c1>// Therefore references need to be manually deleted because otherwise the
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=c1>// references will first be cleaned if main() returns (application exit).
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>Достаточно сообразить и понять, что из себя представляет JNI:</p><ul><li>Есть <code>JNIEnv</code>, собственно штука через которую мы будем вызывать функции JNI;</li><li>В Java все классы наследуются от класса <code>java/lang/Object</code>, здесь он представлен как <code>jclass</code> (просто класс, <strong>не объект</strong>) и <code>jobject</code> (соотв. объект);</li><li><code>GetObjectClass</code> используется, чтобы получить <code>jclass</code> из объекта (в данном случае нативное андроид активити SDL), чтобы потом уже получить <code>jmethodID</code> (как понимаю ID метода того или иного класса);</li><li>Для вызова функций Java из C++ есть функции типа <code>CallXMethod</code>. X в данном случае КАК вызывать метод. Он принимает <code>jclass</code> и <code>methodID</code>, а также аргументы (которые должны быть представлены в <code>jobject</code>) в виде C++ шаблона с произвольной длиной;</li><li>DeleteLocalRef. Дело в том, что в JNI ты управляешь памятью самостоятельно. А значить нужно очищать ссылки объектов JNI;</li></ul><p>Так вот. Чтобы правильно вызывать методы, нужно понимать сигнатуры JNI.
+Рассмотрим вот эту строку:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-java data-lang=java><span class=line><span class=cl><span class=n>jmethodID</span><span class=w> </span><span class=n>method_id</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>env</span><span class=o>-&gt;</span><span class=n>GetMethodID</span><span class=p>(</span><span class=n>clazz</span><span class=p>,</span><span class=w> </span><span class=s>&#34;showHome&#34;</span><span class=p>,</span><span class=w> </span><span class=s>&#34;()V&#34;</span><span class=p>);</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><p><code>()V</code> - это сигнатура JNI метода. <code>()</code> - значит, что метод не принимает аргументов, <code>V</code> - метод ничего не возвращает (void). clazz в данном случае класс Java (jclass), jobject здесь не нужен.</p><p>Если нужно больше информации про JNI, то как я говорил выше, лучше рассматривайте <a class=link href=https://docs.oracle.com/javase/8/docs/technotes/guides/jni/spec/jniTOC.html target=_blank rel=noopener>этот</a> сайт.</p><p>А мы начнем делать модификации для Java проекта, прежде чем начать писать код для JNI.</p><p>Убедитесь, что вы скачали Android JDK, NDK и SDL, а также вытащили из SDL папку <code>android-project</code>, мы будем работать только в этой папке.</p><p>А теперь, приступим:</p><ul><li>Открываем папку <code>app/src/main/java/&lt;...>/app</code>;</li><li>Открываем файл SDLAcitivity.java;</li><li>Добавим следующие Java импорты:</li></ul><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-java data-lang=java><span class=line><span class=cl><span class=kn>import</span><span class=w> </span><span class=nn>android.os.Environment</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=kn>import</span><span class=w> </span><span class=nn>android.provider.Settings</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=kn>import</span><span class=w> </span><span class=nn>android.app.*</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=kn>import</span><span class=w> </span><span class=nn>android.app.NotificationManager</span><span class=p>;</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><ul><li>Сделаем собственно наш метод для уведомлений:</li></ul><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span><span class=lnt>56
+</span><span class=lnt>57
+</span><span class=lnt>58
+</span><span class=lnt>59
+</span><span class=lnt>60
+</span><span class=lnt>61
+</span><span class=lnt>62
+</span><span class=lnt>63
+</span><span class=lnt>64
+</span><span class=lnt>65
+</span><span class=lnt>66
+</span><span class=lnt>67
+</span><span class=lnt>68
+</span><span class=lnt>69
+</span><span class=lnt>70
+</span><span class=lnt>71
+</span><span class=lnt>72
+</span><span class=lnt>73
+</span><span class=lnt>74
+</span><span class=lnt>75
+</span><span class=lnt>76
+</span><span class=lnt>77
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-java data-lang=java><span class=line><span class=cl><span class=kd>public</span><span class=w> </span><span class=kd>class</span> <span class=nc>SDLActivity</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=kd>extends</span><span class=w> </span><span class=n>Activity</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=kd>implements</span><span class=w> </span><span class=n>View</span><span class=p>.</span><span class=na>OnSystemUiVisibilityChangeListener</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>	  </span><span class=cm>/*
+</span></span></span><span class=line><span class=cl><span class=cm>	  Для новых версий Android требуется создание каналов для уведомлений.
+</span></span></span><span class=line><span class=cl><span class=cm>	  Подробнее об этом в ссылке ниже.
+</span></span></span><span class=line><span class=cl><span class=cm>	  */</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=kd>private</span><span class=w> </span><span class=kt>void</span><span class=w> </span><span class=nf>createNotificationChannel</span><span class=p>()</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=c1>// https://developer.android.com/develop/ui/views/notifications#ManageChannels</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=k>if</span><span class=w> </span><span class=p>(</span><span class=n>Build</span><span class=p>.</span><span class=na>VERSION</span><span class=p>.</span><span class=na>SDK_INT</span><span class=w> </span><span class=o>&gt;=</span><span class=w> </span><span class=n>Build</span><span class=p>.</span><span class=na>VERSION_CODES</span><span class=p>.</span><span class=na>O</span><span class=p>)</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=n>CharSequence</span><span class=w> </span><span class=n>name</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=s>&#34;Notifications&#34;</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=n>String</span><span class=w> </span><span class=n>description</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=s>&#34;All notifications&#34;</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=kt>int</span><span class=w> </span><span class=n>importance</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>NotificationManager</span><span class=p>.</span><span class=na>IMPORTANCE_DEFAULT</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=n>NotificationChannel</span><span class=w> </span><span class=n>channel</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=k>new</span><span class=w> </span><span class=n>NotificationChannel</span><span class=p>(</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                </span><span class=s>&#34;Shortice&#34;</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                </span><span class=n>name</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                </span><span class=n>importance</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=n>channel</span><span class=p>.</span><span class=na>setDescription</span><span class=p>(</span><span class=n>description</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=n>NotificationManager</span><span class=w> </span><span class=n>notificationManager</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>getSystemService</span><span class=p>(</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                </span><span class=n>NotificationManager</span><span class=p>.</span><span class=na>class</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=n>notificationManager</span><span class=p>.</span><span class=na>createNotificationChannel</span><span class=p>(</span><span class=n>channel</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=p>}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=p>}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>	  </span><span class=cm>/*
+</span></span></span><span class=line><span class=cl><span class=cm>	  Логика создания уведомления.
+</span></span></span><span class=line><span class=cl><span class=cm>
+</span></span></span><span class=line><span class=cl><span class=cm>	  В первом варианте мы должны указывать имя нашего потока уведомлений.
+</span></span></span><span class=line><span class=cl><span class=cm>	  */</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=kd>private</span><span class=w> </span><span class=n>Notification</span><span class=p>.</span><span class=na>Builder</span><span class=w> </span><span class=nf>createNotificationBuilder</span><span class=p>()</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=k>if</span><span class=w> </span><span class=p>(</span><span class=n>Build</span><span class=p>.</span><span class=na>VERSION</span><span class=p>.</span><span class=na>SDK_INT</span><span class=w> </span><span class=o>&gt;=</span><span class=w> </span><span class=n>Build</span><span class=p>.</span><span class=na>VERSION_CODES</span><span class=p>.</span><span class=na>O</span><span class=p>)</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=k>return</span><span class=w> </span><span class=k>new</span><span class=w> </span><span class=n>Notification</span><span class=p>.</span><span class=na>Builder</span><span class=p>(</span><span class=n>getContext</span><span class=p>(),</span><span class=w> </span><span class=s>&#34;Shortice&#34;</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=p>}</span><span class=w> </span><span class=k>else</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=k>return</span><span class=w> </span><span class=k>new</span><span class=w> </span><span class=n>Notification</span><span class=p>.</span><span class=na>Builder</span><span class=p>(</span><span class=n>getContext</span><span class=p>());</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=p>}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=p>}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>	  </span><span class=cm>/*
+</span></span></span><span class=line><span class=cl><span class=cm>	  Ох уж этот Android... скорее такой код здесь как норма (проверка версий).
+</span></span></span><span class=line><span class=cl><span class=cm>	  Получаем менеджер уведомлений.
+</span></span></span><span class=line><span class=cl><span class=cm>	  */</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=kd>private</span><span class=w> </span><span class=n>NotificationManager</span><span class=w> </span><span class=nf>getNotificationManager</span><span class=p>()</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=k>if</span><span class=w> </span><span class=p>(</span><span class=n>Build</span><span class=p>.</span><span class=na>VERSION</span><span class=p>.</span><span class=na>SDK_INT</span><span class=w> </span><span class=o>&gt;=</span><span class=w> </span><span class=n>Build</span><span class=p>.</span><span class=na>VERSION_CODES</span><span class=p>.</span><span class=na>M</span><span class=p>)</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=k>return</span><span class=w> </span><span class=n>getSystemService</span><span class=p>(</span><span class=n>NotificationManager</span><span class=p>.</span><span class=na>class</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=p>}</span><span class=w> </span><span class=k>else</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=k>return</span><span class=w> </span><span class=p>(</span><span class=n>NotificationManager</span><span class=p>)</span><span class=w> </span><span class=n>getSystemService</span><span class=p>(</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                </span><span class=n>Context</span><span class=p>.</span><span class=na>NOTIFICATION_SERVICE</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=p>}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=p>}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>	  </span><span class=cm>/*
+</span></span></span><span class=line><span class=cl><span class=cm>	  Собственно функция для отправки уведомления.
+</span></span></span><span class=line><span class=cl><span class=cm>	  */</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=kd>public</span><span class=w> </span><span class=kt>void</span><span class=w> </span><span class=nf>PushNotification</span><span class=p>(</span><span class=n>String</span><span class=w> </span><span class=n>title</span><span class=p>,</span><span class=w> </span><span class=n>String</span><span class=w> </span><span class=n>text</span><span class=p>)</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=n>Notification</span><span class=p>.</span><span class=na>Builder</span><span class=w> </span><span class=n>builder</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>createNotificationBuilder</span><span class=p>();</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=n>builder</span><span class=p>.</span><span class=na>setSmallIcon</span><span class=p>(</span><span class=n>R</span><span class=p>.</span><span class=na>drawable</span><span class=p>.</span><span class=na>ic_launcher</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=n>builder</span><span class=p>.</span><span class=na>setContentTitle</span><span class=p>(</span><span class=n>title</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=n>builder</span><span class=p>.</span><span class=na>setContentText</span><span class=p>(</span><span class=n>text</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=n>NotificationManager</span><span class=w> </span><span class=n>notificationManager</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>getNotificationManager</span><span class=p>();</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=n>notificationManager</span><span class=p>.</span><span class=na>notify</span><span class=p>(</span><span class=n>1</span><span class=p>,</span><span class=w> </span><span class=n>builder</span><span class=p>.</span><span class=na>build</span><span class=p>());</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=p>}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=c1>// &lt;...&gt;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=kd>protected</span><span class=w> </span><span class=kt>void</span><span class=w> </span><span class=nf>main</span><span class=p>()</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=c1>// &lt;...&gt;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=n>createNotificationChannel</span><span class=p>();</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=c1>// &lt;...&gt;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=p>}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>}</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><p>И вроде бы все, да? Мы сделали же код для уведомлений? А нифига. При попытки компиляции у нас будет ошибка вот здесь:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-java data-lang=java><span class=line><span class=cl><span class=c1>// &lt;...&gt;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=kd>public</span><span class=w> </span><span class=kt>void</span><span class=w> </span><span class=nf>PushNotification</span><span class=p>(</span><span class=n>String</span><span class=w> </span><span class=n>title</span><span class=p>,</span><span class=w> </span><span class=n>String</span><span class=w> </span><span class=n>text</span><span class=p>)</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>	</span><span class=c1>// &lt;...&gt;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>	</span><span class=n>builder</span><span class=p>.</span><span class=na>setSmallIcon</span><span class=p>(</span><span class=n>R</span><span class=p>.</span><span class=na>drawable</span><span class=p>.</span><span class=na>ic_launcher</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>	</span><span class=c1>// &lt;...&gt;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=c1>// &lt;...&gt;</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><p>У нас нет папки <code>drawable</code> в <code>src/main/res</code> и самого ic_launcher в ней. Исправляем. Создаем папку drawable в нужном нам пути и копируем <code>ic_launcher.png</code> из <code>mipmap-mdpi</code>. Теперь код должен собраться. Однако мы еще не сделали JNI привязки для него!</p><p>Но сначала удалим ВСЕ, что находится в папке <code>app/jni</code>. Теперь нужно сделать четыре файла в ней:</p><ul><li>android_jni.cpp;</li><li>android_jni.hpp;</li><li>main.cpp (лучше возьмите <a class=link href=https://github.com/shortice/SDL-Jni target=_blank rel=noopener>здесь</a>);</li><li>CmakeLists.txt (настроите сами или опять же возьмите <a class=link href=https://github.com/shortice/SDL-Jni target=_blank rel=noopener>здесь</a>);</li></ul><p>В android_jni.hpp:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-cpp data-lang=cpp><span class=line><span class=cl><span class=cp>#pragma once
+</span></span></span><span class=line><span class=cl><span class=cp></span>
+</span></span><span class=line><span class=cl><span class=kt>void</span> <span class=nf>PushNotification</span><span class=p>(</span><span class=k>const</span> <span class=kt>char</span><span class=o>*</span> <span class=n>title</span><span class=p>,</span> <span class=k>const</span> <span class=kt>char</span><span class=o>*</span> <span class=n>text</span><span class=p>);</span>
+</span></span></code></pre></td></tr></table></div></div><p>Напомню, что в начале этого полотна текста я дал объяснение основным структурам и функций JNI, которые тут используются.</p><p>В android_jni.cpp:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-cpp data-lang=cpp><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&#34;android_jni.hpp&#34;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&#34;jni.h&#34;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&#34;SDL3/SDL_system.h&#34;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp></span>
+</span></span><span class=line><span class=cl><span class=kt>void</span> <span class=nf>PushNotification</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>    <span class=k>const</span> <span class=kt>char</span><span class=o>*</span> <span class=n>title</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=k>const</span> <span class=kt>char</span><span class=o>*</span> <span class=n>text</span>
+</span></span><span class=line><span class=cl><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=n>JNIEnv</span><span class=o>*</span> <span class=n>env</span> <span class=o>=</span> <span class=p>(</span><span class=n>JNIEnv</span><span class=o>*</span><span class=p>)</span><span class=n>SDL_GetAndroidJNIEnv</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>    <span class=n>jobject</span> <span class=n>activity</span> <span class=o>=</span> <span class=p>(</span><span class=n>jobject</span><span class=p>)</span><span class=n>SDL_GetAndroidActivity</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>    <span class=n>jclass</span> <span class=n>activityClass</span><span class=p>(</span><span class=n>env</span><span class=o>-&gt;</span><span class=n>GetObjectClass</span><span class=p>(</span><span class=n>activity</span><span class=p>));</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=n>jmethodID</span> <span class=n>method_id</span> <span class=o>=</span> <span class=n>env</span><span class=o>-&gt;</span><span class=n>GetMethodID</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>        <span class=n>activityClass</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=s>&#34;PushNotification&#34;</span><span class=p>,</span> <span class=c1>// Наш метод, который мы сделали выше
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=s>&#34;(Ljava/lang/String;Ljava/lang/String;)V&#34;</span> <span class=c1>// JNI сигнатура функции
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=c1>// JAVA вариант: void(String title, String text);
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=c1>// JNI:           ^ V  ^Ljava/lang/String;
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>// Создаем Java строки
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=n>jstring</span> <span class=n>param1</span> <span class=o>=</span> <span class=n>env</span><span class=o>-&gt;</span><span class=n>NewStringUTF</span><span class=p>(</span><span class=n>title</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=n>jstring</span> <span class=n>param2</span> <span class=o>=</span> <span class=n>env</span><span class=o>-&gt;</span><span class=n>NewStringUTF</span><span class=p>(</span><span class=n>text</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>// Вызываем наш метод уведомлений
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=n>env</span><span class=o>-&gt;</span><span class=n>CallVoidMethod</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>        <span class=n>activity</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=n>method_id</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=n>param1</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=n>param2</span>
+</span></span><span class=line><span class=cl>    <span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>// Очищаем память
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=n>env</span><span class=o>-&gt;</span><span class=n>DeleteLocalRef</span><span class=p>(</span><span class=n>param1</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=n>env</span><span class=o>-&gt;</span><span class=n>DeleteLocalRef</span><span class=p>(</span><span class=n>param2</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=n>env</span><span class=o>-&gt;</span><span class=n>DeleteLocalRef</span><span class=p>(</span><span class=n>activity</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=n>env</span><span class=o>-&gt;</span><span class=n>DeleteLocalRef</span><span class=p>(</span><span class=n>activityClass</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>Добавим еще в AndroidManifest.xml эту строчку для новых версий Android API:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-xml data-lang=xml><span class=line><span class=cl><span class=nt>&lt;uses-permission</span> <span class=na>android:name=</span><span class=s>&#34;android.permission.POST_NOTIFICATIONS&#34;</span><span class=nt>/&gt;</span>
+</span></span></code></pre></td></tr></table></div></div><p>Судя по тому, что я прочитал, где-то пишут, что нужно запрашивать это разрешение во время использования приложения, в каких-то сценариях не нужно запрашивать, поэтому я сделал в main.cpp кнопку на запрос данного разрешения.</p><p>Напомню, main.cpp и CMakeFiles.txt вы можете взять из репозитория, который я уже не раз тут писал. И очень важное предупреждение, SDL загружает ваш код из вашей внешней .so библиотеки main, убедитесь, что вы в Cmake файле делаете сборку не исполняемого файла, а внешней библиотеки.</p><p>Прежде чем вы сами будете настраивать сборку, я сделаю предупреждение. Так как я не знаком с системой сборки Make и ndk, то я ее полностью выпилил из gradle проекта. Не думаю, что кто-то будет расстроен:).</p><p>А теперь если вы настроили Cmake сборку, то можете выполнить:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>./gradlew build
+</span></span></code></pre></td></tr></table></div></div><p>Эта команда создаст вам два .apk в папке <code>app/build/outputs/apk</code>. Release у меня не устанавливался вообще, поэтому пробуйте сначала Debug.</p><p>Или же вы можете подключить Android устройство с режимом отладки и прописать:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>./gradlew installDebug
+</span></span></code></pre></td></tr></table></div></div><p>Это скомпилирует и установит приложение Game с иконкой SDL.</p><p>Лень было картинки оптимизировать, извините заранее!
+Если вы сделали все правильно и приложение у вас запустилось, у вас должно быть что-то такое:</p><p><img src=/me/p/sdl3-jni/1.jpg width=1080 height=2388 srcset="/me/p/sdl3-jni/1_hu_ec1ef1a3daf7a0dd.jpg 480w, /me/p/sdl3-jni/1_hu_9ac192cec82aa3d4.jpg 1024w" loading=lazy alt="Запущенное приложение" class=gallery-image data-flex-grow=45 data-flex-basis=108px></p><p><img src=/me/p/sdl3-jni/2.jpg width=1080 height=2388 srcset="/me/p/sdl3-jni/2_hu_72bf0c2354d8747c.jpg 480w, /me/p/sdl3-jni/2_hu_858d20d3733a982d.jpg 1024w" loading=lazy alt="Наше уведомление" class=gallery-image data-flex-grow=45 data-flex-basis=108px></p><p><img src=/me/p/sdl3-jni/3.jpg width=576 height=1280 srcset="/me/p/sdl3-jni/3_hu_fbf74f83219c3e4.jpg 480w, /me/p/sdl3-jni/3_hu_4a1dd1bbe75a1817.jpg 1024w" loading=lazy alt="Запрос на уведомления в новых Android" class=gallery-image data-flex-grow=45 data-flex-basis=108px></p><p>Собственно все. Если нужен готовый код, то опять повторюсь, забирайте его <a class=link href=https://github.com/shortice/SDL-Jni target=_blank rel=noopener>тут</a>. Можете также загрузить уже готовый .apk под архитектуры armeabi-v7a и arm64-v8a <a class=link href=https://github.com/shortice/SDL-Jni/releases target=_blank rel=noopener>здесь</a>. Вирусов нет ;D.</p></section><footer class=article-footer><section class=article-tags><a href=/me/tags/jni/>Jni</a>
+<a href=/me/tags/sdl3/>Sdl3</a>
+<a href=/me/tags/android/>Android</a></section><section class=article-copyright><svg class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><path d="M14.5 9a3.5 4 0 100 6"/></svg>
+<span>Licensed under CC BY-NC-SA 4.0</span></section></footer></article><footer class=site-footer><section class=copyright>&copy;
+2025 Блог shortice</section><section class=powerby>Создано при помощи <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a><br>Тема <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.31.0>Stack</a></b>, дизайн <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a></section></footer><div class=pswp tabindex=-1 role=dialog aria-hidden=true><div class=pswp__bg></div><div class=pswp__scroll-wrap><div class=pswp__container><div class=pswp__item></div><div class=pswp__item></div><div class=pswp__item></div></div><div class="pswp__ui pswp__ui--hidden"><div class=pswp__top-bar><div class=pswp__counter></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+<button class="pswp__button pswp__button--share" title=Share></button>
+<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button><div class=pswp__preloader><div class=pswp__preloader__icn><div class=pswp__preloader__cut><div class=pswp__preloader__donut></div></div></div></div></div><div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap"><div class=pswp__share-tooltip></div></div><button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+</button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button><div class=pswp__caption><div class=pswp__caption__center></div></div></div></div></div><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU=" crossorigin=anonymous defer></script><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css crossorigin=anonymous></main></div><script src=https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z+KMkF24hUW8WePSA9HM=" crossorigin=anonymous></script><script type=text/javascript src=/me/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js defer></script><script>(function(){const e=document.createElement("link");e.href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",e.type="text/css",e.rel="stylesheet",document.head.appendChild(e)})()</script></body></html>
